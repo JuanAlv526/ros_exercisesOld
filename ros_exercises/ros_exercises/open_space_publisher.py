@@ -26,13 +26,20 @@ class ComplexSubscriber(Node):
 
     def __init__(self):
         super().__init__('open_space_publisher')
+        self.declare_parameter('osp_sub_topic', 'fake_scan')
+        self.declare_parameter('osp_pub_topic', 'open_space')
+
+        self.osp_sub_topic = self.get_parameter('osp_sub_topic').value
+        self.osp_pub_topic = self.get_parameter('osp_pub_topic').value
+
+
         self.subscription = self.create_subscription(
             LaserScan,
-            'fake_scan',
+            self.osp_sub_topic,
             self.listener_callback,
             10)
         self.subscription  # prevent unused variable warning
-        self.open_publisher_ = self.create_publisher(OpenSpace, 'open_space', 10)
+        self.open_publisher_ = self.create_publisher(OpenSpace, self.osp_pub_topic, 10)
       
 
     def listener_callback(self, msg):

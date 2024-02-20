@@ -1,4 +1,7 @@
 <launch>
+
+    
+
     <!-- Launch fake_scan_publisher -->
     <node
         pkg="ros_exercises"
@@ -12,6 +15,9 @@
         name="simple_publisher"
         exec="simple_publisher"
         output="screen"></node>
+
+    <arg name="osp_sub_topic" default="fake_scan"/>
+    <arg name="osp_pub_topic" default="open_space"/>
 
     <!-- Launch open_space_publisher -->
     <node

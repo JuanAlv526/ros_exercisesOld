@@ -24,8 +24,26 @@ class ComplexPublisher(Node):
 
     def __init__(self):
         super().__init__('fake_scan_publisher')
-        self.publisher_ = self.create_publisher(LaserScan, 'fake_scan', 10)
-        timer_period = 0.05  # seconds
+
+        self.declare_parameter('fsp_topic', 'fake_scan')
+        self.declare_parameter('fsp_rate', 0.05)
+        self.declare_parameter('angle_min', -2/3 * math.pi)
+        self.declare_parameter('angle_max', 2/3 * math.pi)
+        self.declare_parameter('range_min', 1.0)
+        self.declare_parameter('range_max', 10.0)
+        self.declare_parameter('angle_increment', 1/300 * math.pi)
+
+        # Retrieve parameter values
+        self.fsp_topic = self.get_parameter('fsp_topic').value
+        self.fsp_rate = self.get_parameter('fsp_rate').value
+        self.angle_min = self.get_parameter('angle_min').value
+        self.angle_max = self.get_parameter('angle_max').value
+        self.range_min = self.get_parameter('range_min').value
+        self.range_max = self.get_parameter('range_max').value
+        self.angle_increment = self.get_parameter('angle_increment').value
+
+        self.publisher_ = self.create_publisher(LaserScan, self.fsp_topic, 10)
+        timer_period = self.fsp_rate  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
 
@@ -33,13 +51,11 @@ class ComplexPublisher(Node):
         msg = LaserScan()
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = "base_link"
-        msg.angle_min = -2/3 * math.pi
-        msg.angle_max = 2/3 * math.pi
-        msg.angle_increment = 1/300 * math.pi
-        msg.range_min = 1.0
-        msg.range_max = 10.0
-        msg.scan_time = 0.1
-        msg.time_increment = 0.0
+        msg.angle_min = self.angle_min
+        msg.angle_max = self.angle_max
+        msg.angle_increment = self.angle_increment
+        msg.range_min = self.range_min
+        msg.range_max = self.range_max
 
         num_ranges = int((msg.angle_max - msg.angle_min) / msg.angle_increment) + 1
         msg.ranges = [random.uniform(msg.range_min, msg.range_max) for _ in range(num_ranges)]
