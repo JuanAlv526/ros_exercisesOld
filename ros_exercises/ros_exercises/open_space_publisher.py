@@ -18,7 +18,8 @@ import random
 import math
 from sensor_msgs.msg import LaserScan
 from builtin_interfaces.msg import Time
-from std_msgs.msg import Float32
+from ros_exercises_interfaces.msg import OpenSpace
+
 
 
 class ComplexSubscriber(Node):
@@ -31,8 +32,8 @@ class ComplexSubscriber(Node):
             self.listener_callback,
             10)
         self.subscription  # prevent unused variable warning
-        self.distance_publisher_ = self.create_publisher(Float32, 'open_space_distance', 10)
-        self.angle_publisher_ = self.create_publisher(Float32, 'angle', 10)
+        self.open_publisher_ = self.create_publisher(OpenSpace, 'open_space', 10)
+      
 
     def listener_callback(self, msg):
         longest_range = max(msg.ranges)
@@ -40,13 +41,13 @@ class ComplexSubscriber(Node):
         longest_range_angle = msg.angle_min + index_of_longest_range * msg.angle_increment
         self.get_logger().info('Longest range: %f at angle: %f' % (longest_range, longest_range_angle))
 
-        distance_msg = Float32()
-        distance_msg.data = longest_range
-        angle_msg = Float32()
-        angle_msg.data = longest_range_angle
+        open_msg = OpenSpace()
+        open_msg.angle = longest_range_angle
+        open_msg.distance = longest_range
+
         
-        self.distance_publisher_.publish(distance_msg)
-        self.angle_publisher_.publish(angle_msg)
+        self.open_publisher_.publish(open_msg)
+       
 
 
 def main(args=None):

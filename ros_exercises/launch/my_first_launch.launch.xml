@@ -1,0 +1,33 @@
+<launch>
+    <!-- Launch fake_scan_publisher -->
+    <node
+        pkg="ros_exercises"
+        type="fake_scan_publisher"
+        name="fake_scan_publisher"
+        output="screen">
+    </node>
+
+    <!-- Launch simple_publisher -->
+    <node
+        pkg="ros_exercises"
+        type="simple_publisher"
+        name="simple_publisher"
+        output="screen">
+    </node>
+
+    <!-- Launch open_space_publisher -->
+    <node
+        pkg="ros_exercises"
+        type="open_space_publisher"
+        name="open_space_publisher"
+        output="screen">
+    </node>
+
+    <!-- Launch simple_subscriber -->
+    <node
+        pkg="ros_exercises"
+        type="simple_subscriber"
+        name="simple_subscriber"
+        output="screen">
+    </node>
+</launch>
