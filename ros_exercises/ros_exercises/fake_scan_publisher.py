@@ -18,6 +18,7 @@ import random
 import math
 from sensor_msgs.msg import LaserScan
 from builtin_interfaces.msg import Time
+from std_msgs.msg import Float32
 
 
 class ComplexPublisher(Node):
@@ -43,6 +44,7 @@ class ComplexPublisher(Node):
         self.angle_increment = self.get_parameter('angle_increment').value
 
         self.publisher_ = self.create_publisher(LaserScan, self.fsp_topic, 10)
+        self.range_test_publisher = self.create_publisher(Float32, 'range_test', 10)
         timer_period = self.fsp_rate  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
@@ -62,6 +64,11 @@ class ComplexPublisher(Node):
         msg.intensities = []
 
         self.publisher_.publish(msg)
+
+        range_test_msg = Float32()
+        range_test_msg.data = float(len(msg.ranges))
+        self.range_test_publisher.publish(range_test_msg)
+
         self.get_logger().info('Publishing LaserScan message')
 
 
